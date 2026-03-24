@@ -116,7 +116,9 @@ public static class Evaluator
         {
             if (expr.Contains("{value:") && expr.Contains("}"))
             {
-                var fmt = expr[expr.IndexOf(':') + 1..expr.IndexOf('}')];
+                var colonIdx = expr.IndexOf(':');
+                var braceIdx = expr.IndexOf('}');
+                var fmt = expr.Substring(colonIdx + 1, braceIdx - colonIdx - 1);
                 return value.ToString(fmt);
             }
             if (expr.StartsWith("Math.Round(value,"))
@@ -261,7 +263,7 @@ public static class BrowserInjector
                     if (pages.Count == 0) { await browser.DisposeAsync(); browser = null; continue; }
 
                     page = pages.LastOrDefault(p =>
-                        (!string.IsNullOrEmpty(t.TabTitle) && p.Title.Contains(t.TabTitle, StringComparison.OrdinalIgnoreCase)) ||
+                        (!string.IsNullOrEmpty(t.TabTitle) && (await Task.Run(() => p.Title)).Contains(t.TabTitle, StringComparison.OrdinalIgnoreCase)) ||
                         (!string.IsNullOrEmpty(t.BrowserUrl) && p.Url.Contains(t.BrowserUrl))) ?? pages.Last();
                     break;
                 }
@@ -301,7 +303,11 @@ public static class BrowserInjector
                     await loc.FillAsync(text);
                     break;
                 case SendMethod.Type:
-                    if (t.ClearBefore) await loc.TripleClickAsync();
+                    if (t.ClearBefore)
+                    {
+                        await loc.DblClickAsync();
+                        await loc.PressAsync("Control+A");
+                    }
                     await loc.TypeAsync(text, new() { Delay = 30 });
                     break;
                 case SendMethod.JsSet:
