@@ -263,7 +263,6 @@ public static class BrowserInjector
                     if (pages.Count == 0) { await browser.DisposeAsync(); browser = null; continue; }
 
                     page = pages.LastOrDefault(p =>
-                        (!string.IsNullOrEmpty(t.TabTitle) && (await Task.Run(() => p.Title)).Contains(t.TabTitle, StringComparison.OrdinalIgnoreCase)) ||
                         (!string.IsNullOrEmpty(t.BrowserUrl) && p.Url.Contains(t.BrowserUrl))) ?? pages.Last();
                     break;
                 }

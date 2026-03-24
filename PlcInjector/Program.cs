@@ -1,6 +1,5 @@
 using PlcInjector;
 
-var app = new System.Windows.Forms.ApplicationContext();
 System.Windows.Forms.Application.EnableVisualStyles();
 System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
 System.Windows.Forms.Application.SetHighDpiMode(System.Windows.Forms.HighDpiMode.PerMonitorV2);
@@ -13,6 +12,4 @@ AppDomain.CurrentDomain.UnhandledException += (_, e) =>
     System.Windows.Forms.MessageBox.Show($"严重错误:\n{e.ExceptionObject}", "严重错误",
         System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
 
-var mainForm = new MainForm();
-mainForm.FormClosed += (_, __) => app.ExitThread();
-System.Windows.Forms.Application.Run(app, mainForm);
+System.Windows.Forms.Application.Run(new MainForm());
